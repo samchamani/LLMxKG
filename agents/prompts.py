@@ -162,7 +162,9 @@ Current entity: "{entity}"
 Relationships: {relationships}
 """.format(
         prompt=prompt,
-        entity=entity["name"],  # change to label later on or change param
+        entity=entity[
+            "name"
+        ],  # TODO: name not necessarliy there. change param to string
         relationships=", ".join(
             [
                 f"{"<" if relationship["isOutgoing"] == False else ""}-[:{relationship["type"]}]-{">" if relationship["isOutgoing"] == True else ""}"
@@ -199,7 +201,9 @@ Entities: [
 """
 
 
-system_judge_path = """Given a question and the associated retrieved knowledge graph path, you are asked to answer whether it's sufficient for you to answer the question with the path data and your knowledge. Here are some examples.
+system_judge_path = """Given a question and the associated retrieved knowledge graph path, you are asked to answer whether it's sufficient for you to answer the question with the path data and your knowledge.
+Your response must be a valid JSON with fields "canAnswer" and "reason". Set "canAnswer" only then to true, if you have found a positive answer to the question!!!
+Here are some examples.
 Q: Find the person who said \"Taste cannot be controlled by law\", what did this person die from?
 Knowledge Graph Path: [
     { "uuid": "some-id", "label": "Media Common", "data": "...some data..." },

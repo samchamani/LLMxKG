@@ -2,12 +2,12 @@ from neo4j import GraphDatabase, Transaction
 from dotenv import load_dotenv
 import os
 from typing import Literal, List
-import queries
+import queries_Cypher
 import re
 
 
 # TODO: add db_name for performance
-class GraphClient:
+class GraphNeo4j:
 
     def __init__(self):
         print("Loading environment variables...")
@@ -83,24 +83,24 @@ class GraphClient:
         ]
         ```
         """
-        query = self._format_query(queries.create, labels)
+        query = self._format_query(queries_Cypher.create, labels)
         return self._run_query("write", query, data_list=data_list)
 
     def read(self, data_list: List[dict], labels: List[str] = []):
-        query = self._format_query(queries.read, labels)
+        query = self._format_query(queries_Cypher.read, labels)
         return self._run_query("read", query, data_list=data_list)
 
     def find(self, data_list: List[str], labels: List[str] = []):
         """find nodes that contain strings in `data_list`"""
-        query = self._format_query(queries.find, labels)
+        query = self._format_query(queries_Cypher.find, labels)
         return self._run_query("read", query, data_list=data_list)
 
     def update(self, data_list: List[dict], new_data: dict, labels: List[str] = []):
-        query = self._format_query(queries.update, labels)
+        query = self._format_query(queries_Cypher.update, labels)
         return self._run_query("write", query, data_list=data_list, new_data=new_data)
 
     def delete(self, data_list: List[dict], labels: List[str] = []):
-        query = self._format_query(queries.delete, labels)
+        query = self._format_query(queries_Cypher.delete, labels)
         return self._run_query("write", query, data_list=data_list)
 
     def link(
@@ -113,7 +113,7 @@ class GraphClient:
         """
         can be used to create links or update existing ones
         """
-        query = self._format_query(queries.link, rel_type=rel_type)
+        query = self._format_query(queries_Cypher.link, rel_type=rel_type)
         return self._run_query(
             "write",
             query,
@@ -132,7 +132,7 @@ class GraphClient:
     ):
         isStr = isinstance(relation, str)
         query = self._format_query(
-            queries.unlink,
+            queries_Cypher.unlink,
             rel_type=relation if isStr else "",
             ignore_direction=ignore_direction,
         )
@@ -154,7 +154,7 @@ class GraphClient:
     ):
         isStr = isinstance(relation, str)
         query = self._format_query(
-            queries.read_link,
+            queries_Cypher.read_link,
             rel_type=relation if isStr else "",
             ignore_direction=ignore_direction,
         )
@@ -169,7 +169,9 @@ class GraphClient:
 
     def read_neighbors(self, data_list: List[dict], rel_type="", ignore_direction=True):
         query = self._format_query(
-            queries.read_neighbors, rel_type=rel_type, ignore_direction=ignore_direction
+            queries_Cypher.read_neighbors,
+            rel_type=rel_type,
+            ignore_direction=ignore_direction,
         )
         return self._run_query("read", query, key=None, data_list=data_list)
 

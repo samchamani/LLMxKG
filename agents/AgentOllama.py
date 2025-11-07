@@ -1,22 +1,26 @@
-from Agent import Agent
+from agents import Agent
 from ollama import Client
 import os
 import json
 from dotenv import load_dotenv
-import prompts
+import agents.prompts as prompts
 from typing import Literal, List
-from errors import FormatError
+from utils import FormatError
 
 load_dotenv()
 os.environ["NO_PROXY"] = "localhost,127.0.0.1"
+AgentKey = Literal[
+    "llama3.2",
+    "llama3.2:3b-instruct-fp16",
+    "llama3.1:8b-instruct-q6_K",
+    "gemma3:12b",
+]
 
 
-class AgentLlama(Agent):
+class AgentOllama(Agent):
     def __init__(
         self,
-        model: Literal[
-            "llama3.2", "llama3.2:3b-instruct-fp16", "llama3.1:8b-instruct-q6_K"
-        ],
+        model: AgentKey,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -49,11 +53,11 @@ class AgentLlama(Agent):
             messages=[
                 {
                     "role": "system",
-                    "content": prompts.system_rate_relationships_label_based,
+                    "content": prompts.system_rate_relationships,
                 },
                 {
                     "role": "user",
-                    "content": prompts.user_rate_relationships_label_based(
+                    "content": prompts.user_rate_relationships(
                         prompt, entity, relationships
                     ),
                 },

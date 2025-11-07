@@ -1,14 +1,14 @@
-from Agent import Agent
-from GraphClient import GraphClient
+from agents import Agent
+from graphs import Graph
 from utils import getBest, printPaths, fixScoreArray
 import json
-from errors import FormatError, ToGException, InstructionError
+from utils import FormatError, ToGException, InstructionError
 
 
 def thinkOnGraph(
     prompt: str,
     agent: Agent,
-    graph: GraphClient,
+    graph: Graph,
     max_paths: int,
     max_depth: int,
     forgiveScoreMismatch: bool = False,
@@ -24,7 +24,7 @@ def thinkOnGraph(
             raise ToGException()
         print(f"searching entities with: {search_terms}")
         seed_entities = graph.find(search_terms)
-        print(f"Found seed entities {[entity["name"] for entity in seed_entities]}")
+        print(f"Found seed entities {seed_entities}")
         candidate_paths = [[entity] for entity in seed_entities]
         print("Initializing top paths based on entity rating")
         ratings = agent.rate_entities(prompt, seed_entities)
